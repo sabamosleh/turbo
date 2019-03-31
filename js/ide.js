@@ -234,6 +234,8 @@ var ide = new function() {
 
     }
 
+
+
     this.init = function() {
     ide.waiter.addInfo("ide starting up");
     // (very raw) compatibility check <- TODO: put this into its own function
@@ -1326,7 +1328,12 @@ var ide = new function() {
           });
 
 
-      });
+          });
+
+
+
+
+
 
 
   };
@@ -1593,22 +1600,20 @@ var ide = new function() {
     ide.update_map();
 
 
-    var markers= ide.map
-    alert(Object.values(markers));
+      makeQuery(function(position){
 
-     var group=new H.map.Group();
-     group.add(markers);
-     ide.map.setBounds(group.getBounds());
+          //todo:it works based on user location...,should consider on the position choosed by user too so...
+          //todo:need make as two seprate functions
+          //todo:if we could do this by get the set of the circlemarkers we don't nee to have 2 functions...  :O
+          var user_lat =  position.coords.latitude;
+          var user_lon = position.coords.longitude;
+          var userPos = L.latLng(user_lat,user_lon);
+          ide.map.panTo(userPos);
+          ide.map.setZoom(13);
+      });
 
-      // ide.map.fitBounds(
-      //     L.latLngBounds([
-      //         [2, 3],
-      //         [5, 6]
-      //     ]),
-      //     {maxZoom: 100}
-      // );
 
-    console.log("after update map....")
+
   };
   this.compose_share_link = function(query, compression, coords, run) {
     var share_link = "";
