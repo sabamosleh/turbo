@@ -224,34 +224,47 @@ var ide = new function() {
     //
     // }
 
-    // function getCurrentPsn()  {
-    //
-    //   var pos1="";
-    //
-    //     // One-shot position request.
-    //
-    //     // try {
-    //
-    //         var result =  navigator.geolocation.getCurrentPosition(function(position) {
-    //             pos1="tesmmmmt";
-    //
-    //             var pos = new L.LatLng(
-    //                 position.coords.latitude,
-    //                 position.coords.longitude
-    //             );
-    //
-    //
-    //             // ide.map.setView(pos, settings.coords_zoom);
-    //         });
-    //     console.log(
-    //         ,"***position**");
-    //     return pos1;
-    //
-    //
-    //     // } catch (e) {}
-    //
-    //     // return position;
-    // }
+    function getCurrentPsn()  {
+
+      var markerIcon = L.divIcon({
+          iconSize:[40,40],
+          className: "leaflet-dummy-marker"
+
+      });
+//leaflet-div-icon
+
+
+        ide.map.locate({
+            setView: true,
+            enableHighAccuracy: true
+        }).on('locationfound', function(e) {
+                // var marker = new L.marker(e.latlng,{icon: icon});
+           var marker = new L.Marker(e.latlng, {icon:markerIcon});
+                marker.addTo(ide.map);
+            });
+
+
+
+        // try {
+
+             // navigator.geolocation.getCurrentPosition(function(position) {
+             //
+             //
+             //    var pos = new L.LatLng(
+             //        position.coords.latitude,
+             //        position.coords.longitude
+             //    );
+             //
+             //    var lon=position.coords.latitude;
+             //    console.log("lon is: ",lon);
+             //    alert("b hame begin sobh bkhiar...");
+             //    // ide.map.setView(pos, settings.coords_zoom);
+            // });
+
+        // } catch (e) {}
+
+        // return position;
+    }
 
 
 
@@ -630,8 +643,9 @@ var ide = new function() {
             function() {
                 // One-shot position request.
 
-                var pos=getCurrentPsn();
-                console.log(pos,"*****");
+                getCurrentPsn();
+                console.log("*******");
+                // console.log(pos,"*****");
                 // ide.map.setView(pos, settings.coords_zoom);
 
 
