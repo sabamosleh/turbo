@@ -226,8 +226,6 @@ var ide = new function() {
         }).on('locationfound', function(e) {
             if (m_marker !== null) {
                 ide.map.removeLayer(m_marker);
-                alert("removed");
-                console.log("rrrrremoveed")
             }
             m_marker = new L.Marker(e.latlng, {icon:markerIcon});
                 m_marker.addTo(ide.map);
