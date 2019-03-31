@@ -191,7 +191,6 @@ var ide = new function() {
     }
   };
   this.waiter._initialTitle = document.title;
-  //var atmStat=document.getElementById("atm_checkbox").checked;
 
   // == public methods ==
 
@@ -211,64 +210,31 @@ var ide = new function() {
 
     }
 
-    // function returnPosition(position){
-    //
-    //
-    //     var pos = new L.LatLng(
-    //             position.coords.latitude,
-    //             position.coords.longitude
-    //         );
-    //     console.log(pos,"***in returnPosition**");
-    //     // var pos =  position.coords.latitude + "," + position.coords.longitude;
-    //     //     ide.map.setView(pos, settings.coords_zoom);
-    //
-    // }
+
 
     function getCurrentPsn()  {
 
+        var m_marker =null;
+        //    ide.map
       var markerIcon = L.divIcon({
           iconSize:[40,40],
           className: "leaflet-dummy-marker"
-
       });
-//leaflet-div-icon
-
-
         ide.map.locate({
             setView: true,
             enableHighAccuracy: true
         }).on('locationfound', function(e) {
-                // var marker = new L.marker(e.latlng,{icon: icon});
-           var marker = new L.Marker(e.latlng, {icon:markerIcon});
-                marker.addTo(ide.map);
+            if (m_marker !== null) {
+                ide.map.removeLayer(m_marker);
+                alert("removed");
+                console.log("rrrrremoveed")
+            }
+            m_marker = new L.Marker(e.latlng, {icon:markerIcon});
+                m_marker.addTo(ide.map);
             });
 
 
-
-        // try {
-
-             // navigator.geolocation.getCurrentPosition(function(position) {
-             //
-             //
-             //    var pos = new L.LatLng(
-             //        position.coords.latitude,
-             //        position.coords.longitude
-             //    );
-             //
-             //    var lon=position.coords.latitude;
-             //    console.log("lon is: ",lon);
-             //    alert("b hame begin sobh bkhiar...");
-             //    // ide.map.setView(pos, settings.coords_zoom);
-            // });
-
-        // } catch (e) {}
-
-        // return position;
     }
-
-
-
-
 
     this.init = function() {
     ide.waiter.addInfo("ide starting up");
@@ -535,6 +501,7 @@ var ide = new function() {
     });
     var tilesUrl = settings.tile_server;
     var tilesAttrib = configs.tileServerAttribution;
+
     var tiles = new L.TileLayer(tilesUrl, {
       attribution: tilesAttrib,
       noWrap: true,
@@ -1272,73 +1239,6 @@ var ide = new function() {
   };
   /* this returns the current query in the editor.
    * shortcuts are expanded. */
-
-   //  makeQuery(function(position){
-   //
-   //
-   // //  alert(boxstate);
-   //
-   //      var lat =  position.coords.latitude;
-   //      var lon = position.coords.longitude;
-   //      lat = "\""+lat +"\"";
-   //      lon = "\""+lon +"\"";
-   //
-   //      var radius=1000;
-   //      radius = "\""+radius +"\"";
-   //
-   //
-   //      testqry  = "<union>\n";
-   //      // var atm_check = document.getElementById('atm_checkbox').checked.toString();
-   //      // var bank_check = document.getElementById('atm_checkbox').checked.toString();
-   //
-   //    //  alert("atm_check",atm_check);
-   //      if (atm_check=="true"){
-   //          alert("sss");
-   //          console.log(document.getElementById("atm_checkbox").checked,"*I************");
-   //
-   //          testqry = testqry +
-   //              "  <query type=\"node\">\n" +
-   //              "     <has-kv k=\"amenity\" v=\"atm\"/>\n" +
-   //              "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
-   //              "  </query>\n" ;
-   //
-   //      }
-   //      if (bank_check=="true"){
-   //          testqry = testqry +
-   //              "  <query type=\"node\">\n" +
-   //          "  <has-kv k=\"amenity\" v=\"bank\"/>\n" +
-   //          "    \n" +
-   //          "  \n" +
-   //          "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
-   //
-   //          "  </query>\n";
-   //      }
-   //
-   //
-   //      testqry = testqry +
-   //          "</union>\n" +
-   //          "<print/>";
-   //
-   //
-   //
-   //
-   //      // testqry  = "<union>\n" +
-   //      //     "  <query type=\"node\">\n" +
-   //      //     "     <has-kv k=\"amenity\" v=\"atm\"/>\n" +
-   //      //     "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n" +
-   //      //     "  </query>\n" +
-   //      //     "  <query type=\"node\">\n" +
-   //      //     "  <has-kv k=\"amenity\" v=\"bank\"/>\n" +
-   //      //     "    \n" +
-   //      //     "  \n" +
-   //      //     "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n" +
-   //      //
-   //      //     "  </query>\n" +
-   //      //     "</union>\n" +
-   //      //     "<print/>";
-   //
-   //
-   //  });
   this.getQuery = function(callback) {
       //var testqry="pppp";
 
@@ -1399,6 +1299,7 @@ var ide = new function() {
               "$1{{__bbox__global_bbox_xml__ezs4K8__}}$3"
           );
           queryParser.parse(query, shortcuts(), function(query) {
+
               // parse mapcss declarations
               var mapcss = "";
               if (queryParser.hasStatement("style"))
@@ -1430,43 +1331,6 @@ var ide = new function() {
       });
 
 
-    // var query = testqry;
-    // console.log(query ,"############")
-    //
-    // var queryLang = ide.getQueryLang();
-    // // parse query and process shortcuts
-    // // special handling for global bbox in xml queries (which uses an OverpassQL-like notation instead of n/s/e/w parameters):
-    // query = query.replace(
-    //   /(\<osm-script[^>]+bbox[^=]*=[^"'']*["'])({{bbox}})(["'])/,
-    //   "$1{{__bbox__global_bbox_xml__ezs4K8__}}$3"
-    // );
-    // queryParser.parse(query, shortcuts(), function(query) {
-    //   // parse mapcss declarations
-    //   var mapcss = "";
-    //   if (queryParser.hasStatement("style"))
-    //     mapcss = queryParser.getStatement("style");
-    //   ide.mapcss = mapcss;
-    //   // parse data-source statements
-    //   var data_source = null;
-    //   if (queryParser.hasStatement("data")) {
-    //     data_source = queryParser.getStatement("data");
-    //     data_source = data_source.split(",");
-    //     var data_mode = data_source[0].toLowerCase();
-    //     data_source = data_source.slice(1);
-    //     var options = {};
-    //     for (var i = 0; i < data_source.length; i++) {
-    //       var tmp = data_source[i].split("=");
-    //       options[tmp[0]] = tmp[1];
-    //     }
-    //     data_source = {
-    //       mode: data_mode,
-    //       options: options
-    //     };
-    //   }
-    //   ide.data_source = data_source;
-    //   // call result callback
-    //   callback(query);
-    // });
   };
   this.setQuery = function(query) {
     ide.codeEditor.setValue(query);
@@ -1726,7 +1590,27 @@ var ide = new function() {
   //   $("a#logout").hide();
   // };
   this.onRunClick = function() {
+
+
     ide.update_map();
+
+
+    var markers= ide.map
+    alert(Object.values(markers));
+
+     var group=new H.map.Group();
+     group.add(markers);
+     ide.map.setBounds(group.getBounds());
+
+      // ide.map.fitBounds(
+      //     L.latLngBounds([
+      //         [2, 3],
+      //         [5, 6]
+      //     ]),
+      //     {maxZoom: 100}
+      // );
+
+    console.log("after update map....")
   };
   this.compose_share_link = function(query, compression, coords, run) {
     var share_link = "";
