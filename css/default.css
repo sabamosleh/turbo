@@ -19,10 +19,10 @@ body {
   width:45%;
 }
 #dataviewer {
-  background-color: #FFFFFF;
+  background-color: #DD8833;
   padding: 0;
   margin: 0;
-  border-left:1px solid #ccc;
+  border-left:1px solid #4b2f89;
   height: auto;
   position:absolute;
   top:51px;
@@ -43,7 +43,7 @@ body {
   top: calc(51px + 25%);
   left: 0;
   border-left: none;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #cc1a14;
 }
 
 #map {
@@ -66,13 +66,14 @@ body {
   bottom: 0 !important;
   right: 0 !important;
 }
-#editor.hidden {
+  #editor.hidden {
   display:none;
 }
 
 .CodeMirror {
   height:100%;
   line-height:1.2em;
+  color: #232323;
 }
 #editor .CodeMirror-scroll {
   height: 100%;
@@ -468,10 +469,9 @@ body .ui-tooltip {
   width: 30px;
   height: 30px;
   border-radius: 50% 50% 50% 0;
-  background: #253be9;
+  background: #e9151b;
   position:marker;
   transform: rotate(-45deg);
-
   left: 50%;
   top: 50%;
   margin: -20px 0 0 -20px;
