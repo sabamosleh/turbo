@@ -625,68 +625,68 @@ var ide = new function() {
           "leaflet-control-buttons-bboxfilter leaflet-bar-part",
           container
         );
-        $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
-        link.href = "#";
-        link.className += " t";
-        link.setAttribute("data-t", "[title]map_controlls.select_bbox");
-        i18n.translate_ui(link);
-        L.DomEvent.addListener(
-          link,
-          "click",
-          function(e) {
-            if (
-              $(e.target)
-                .parent()
-                .hasClass("disabled") // check if this button is enabled
-            )
-              return false;
-            if (!ide.map.bboxfilter.isEnabled()) {
-              ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
-              ide.map.bboxfilter.enable();
-            } else {
-              ide.map.bboxfilter.disable();
-            }
-            $(e.target)
-              .toggleClass("ui-icon-circlesmall-close")
-              .toggleClass("ui-icon-image");
-            return false;
-          },
-          ide.map
-        );
-        link = L.DomUtil.create(
-          "a",
-          "leaflet-control-buttons-fullscreen leaflet-bar-part",
-          container
-        );
-        $('<span class="ui-icon ui-icon-arrowthickstop-1-w"/>').appendTo(
-          $(link)
-        );
-        link.href = "#";
-        link.className += " t";
-        link.setAttribute("data-t", "[title]map_controlls.toggle_wide_map");
-        i18n.translate_ui(link);
-        L.DomEvent.addListener(
-          link,
-          "click",
-          function(e) {
-            $("#dataviewer").toggleClass("fullscreen");
-            ide.map.invalidateSize();
-            $(e.target)
-              .toggleClass("ui-icon-arrowthickstop-1-e")
-              .toggleClass("ui-icon-arrowthickstop-1-w");
-            $("#editor").toggleClass("hidden");
-            if ($("#editor").resizable("option", "disabled"))
-              $("#editor").resizable("enable");
-            else $("#editor").resizable("disable");
-            return false;
-          },
-          ide.map
-        );
-        link = L.DomUtil.create(
-          "a",
-          "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
-          container
-        );
+        // $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
+        // link.href = "#";
+        // link.className += " t";
+        // link.setAttribute("data-t", "[title]map_controlls.select_bbox");
+        // i18n.translate_ui(link);
+        // L.DomEvent.addListener(
+        //   link,
+        //   "click",
+        //   function(e) {
+        //     if (
+        //       $(e.target)
+        //         .parent()
+        //         .hasClass("disabled") // check if this button is enabled
+        //     )
+        //       return false;
+        //     if (!ide.map.bboxfilter.isEnabled()) {
+        //       ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
+        //       ide.map.bboxfilter.enable();
+        //     } else {
+        //       ide.map.bboxfilter.disable();
+        //     }
+        //     $(e.target)
+        //       .toggleClass("ui-icon-circlesmall-close")
+        //       .toggleClass("ui-icon-image");
+        //     return false;
+        //   },
+        //   ide.map
+        // );
+        // link = L.DomUtil.create(
+        //   "a",
+        //   "leaflet-control-buttons-fullscreen leaflet-bar-part",
+        //   container
+        // );
+        // $('<span class="ui-icon ui-icon-arrowthickstop-1-w"/>').appendTo(
+        //   $(link)
+        // );
+        // link.href = "#";
+        // link.className += " t";
+        // link.setAttribute("data-t", "[title]map_controlls.toggle_wide_map");
+        // i18n.translate_ui(link);
+        // L.DomEvent.addListener(
+        //   link,
+        //   "click",
+        //   function(e) {
+        //     $("#dataviewer").toggleClass("fullscreen");
+        //     ide.map.invalidateSize();
+        //     $(e.target)
+        //       .toggleClass("ui-icon-arrowthickstop-1-e")
+        //       .toggleClass("ui-icon-arrowthickstop-1-w");
+        //     $("#editor").toggleClass("hidden");
+        //     if ($("#editor").resizable("option", "disabled"))
+        //       $("#editor").resizable("enable");
+        //     else $("#editor").resizable("disable");
+        //     return false;
+        //   },
+        //   ide.map
+        // );
+        // link = L.DomUtil.create(
+        //   "a",
+        //   "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
+        //   container
+        // );
         $('<span class="ui-icon ui-icon-cancel"/>').appendTo($(link));
         link.href = "#";
         link.className += " t";
@@ -1596,9 +1596,7 @@ var ide = new function() {
   // };
   this.onRunClick = function() {
 
-
     ide.update_map();
-
 
       makeQuery(function(position){
 
