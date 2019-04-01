@@ -846,7 +846,7 @@ var ide = new function() {
               '<option></option>' +
               '</select>';
             container.style.position = "absolute";
-            container.style.left = "220px";
+            container.style.left = "50px";
          //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
             return container;
 
@@ -855,7 +855,7 @@ var ide = new function() {
     });
     ide.map.addControl(new ComboBox());
 
-    ide.map.addControl(new SearchBox());
+    // ide.map.addControl(new SearchBox());
     // add cross hairs to map
     $('<span class="ui-icon ui-icon-plus" />')
       .addClass("crosshairs")
@@ -1638,9 +1638,7 @@ var ide = new function() {
           var user_lon = position.coords.longitude;
           var userPos = L.latLng(user_lat,user_lon);
           ide.map.panTo(userPos);
-          if(ide.map.getZoom()>13) {
               ide.map.setZoom(13);
-          }
       });
 
 
