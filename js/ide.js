@@ -594,6 +594,10 @@ var ide = new function() {
           },
           ide.map
         );
+
+        //create combobox
+        //   link=L.DomUtil.create("")
+
         link = L.DomUtil.create(
           "a",
           "leaflet-control-buttons-myloc leaflet-bar-part",
@@ -825,6 +829,32 @@ var ide = new function() {
         return container;
       }
     });
+    var ComboBox=L.Control.extend({
+        options :{
+          position:"topleft"
+        },
+        onAdd:function (map) {
+
+          var container=L.DomUtil.create('div', 'info legend');
+          container.innerHTML= '<select id="bank-combo">' +
+              '<option>بانک ملی</option>' +
+              '<option>بانک آینده</option>' +
+              '<option>بانک سرمایه</option>' +
+              '<option>بانک انصار</option>' +
+              '<option>بانک اقتصاد نوین</option>' +
+              '<option>بانک مهراقتصاد</option>' +
+              '<option></option>' +
+              '</select>';
+            container.style.position = "absolute";
+            container.style.left = "220px";
+         //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
+            return container;
+
+        }
+
+    });
+    ide.map.addControl(new ComboBox());
+
     ide.map.addControl(new SearchBox());
     // add cross hairs to map
     $('<span class="ui-icon ui-icon-plus" />')
@@ -1245,8 +1275,9 @@ var ide = new function() {
       makeQuery(function(position){
 
 
-          //  alert(boxstate);
 
+          var bankName=L.DomUtil.get("bank-combo").value;
+          bankName="\""+bankName+"\"";
           var lat =  position.coords.latitude;
           var lon = position.coords.longitude;
           lat = "\""+lat +"\"";
@@ -1258,13 +1289,15 @@ var ide = new function() {
 
        var  testqry  = "<union>\n";
 
-          if (document.getElementById("atm_checkbox").checked){
+
+
+          if (document.getElementById("atm_checkbox").checked ){
               // alert("sss");
-              //console.log(document.getElementById("atm_checkbox").checked,"*I************");
 
               testqry = testqry +
                   "  <query type=\"node\">\n" +
                   "     <has-kv k=\"amenity\" v=\"atm\"/>\n" +
+                  "<has-kv k=\"name\" v="+bankName+"/>\n"+
                   "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
                   "  </query>\n" ;
 
@@ -1273,10 +1306,8 @@ var ide = new function() {
               testqry = testqry +
                   "  <query type=\"node\">\n" +
                   "  <has-kv k=\"amenity\" v=\"bank\"/>\n" +
-                  "    \n" +
-                  "  \n" +
+                  "<has-kv k=\"name\" v="+bankName+"/>\n"+
                   "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
-
                   "  </query>\n";
           }
 
@@ -1607,7 +1638,9 @@ var ide = new function() {
           var user_lon = position.coords.longitude;
           var userPos = L.latLng(user_lat,user_lon);
           ide.map.panTo(userPos);
-          ide.map.setZoom(13);
+          if(ide.map.getZoom()>13) {
+              ide.map.setZoom(13);
+          }
       });
 
 
