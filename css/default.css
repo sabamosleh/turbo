@@ -23,16 +23,21 @@ body {
 }
 
 #dataviewer {
+
     background-color: #DD8833;
     padding: 0;
     margin: 0;
-    border-left: 1px solid #4b2f89;
+    border-left:1px solid #FFFFFF;
     height: auto;
-    position: absolute;
-    top: 51px;
-    bottom: 0;
-    left: 45%;
-    right: 0;
+    position:absolute;
+    top:51px;
+    bottom:0;
+    left:45%;
+    right:0;
+background-color: #DD8833;
+
+    border-left: 1px solid #4b2f89;
+
 }
 
 #editor.portrait {
@@ -67,8 +72,9 @@ body {
 }
 
 #dataviewer.fullscreen {
+
     position: absolute;
-    /*top: 0 !important;*/
+    top: 0 !important;
     left: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
@@ -161,20 +167,21 @@ a.external {
 
 }
 
+
 .checkboxes {
     transform: translateY(-30%);
-    display: inline-block;
+    display: inline-flex;
     margin: 0;
-    top: 50%;
+    top: 5%;
     -ms-transform: translateY(-50%);
 }
 
-.tabs {
-    display: block;
-    position: absolute;
-    top: 25px;
-    right: 5px;
-}
+         .tabs {
+             display: block;
+             position: absolute;
+             top: 25px;
+             right: 5px;
+         }
 
 .button {
     border: 1px solid #ccc;
@@ -203,10 +210,20 @@ a.button:not(.disabled):not(.active):active /*, a.button:focus*/
     text-shadow: none;
 }
 
-.group {
-    margin-right: 0px;
-    display: inline-block;
-}
+        .checkboxes{
+            transform: translateY(-30%);
+            display: inline-flex;
+            margin: 0;
+            top: 4%;
+            -ms-transform: translateY(-50%);
+            margin-left: auto;
+            text-align:center;
+        }
+
+         .group {
+             margin-right: 0px;
+             display: inline-block;
+         }
 
 .group > .button {
     border-radius: 0;
