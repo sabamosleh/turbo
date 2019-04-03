@@ -229,6 +229,7 @@ var ide = new function() {
             }
             m_marker = new L.Marker(e.latlng, {icon:markerIcon});
                 m_marker.addTo(ide.map);
+               //  ide.map.setZoom(13);
             });
 
 
@@ -570,35 +571,32 @@ var ide = new function() {
           "div",
           "leaflet-control-buttons leaflet-bar"
         );
-        var link = L.DomUtil.create(
-          "a",
-          "leaflet-control-buttons-fitdata leaflet-bar-part leaflet-bar-part-top",
-          container
-        );
-        $('<span class="ui-icon ui-icon-search"/>').appendTo($(link));
-        link.href = "#";
-        link.className += " t";
-        link.setAttribute("data-t", "[title]map_controlls.zoom_to_data");
-        i18n.translate_ui(link);
-        L.DomEvent.addListener(
-          link,
-          "click",
-          function() {
-            // hardcoded maxZoom of 18, should be ok for most real-world use-cases
-            try {
-              ide.map.fitBounds(overpass.osmLayer.getBaseLayer().getBounds(), {
-                maxZoom: 18
-              });
-            } catch (e) {}
-            return false;
-          },
-          ide.map
-        );
+        // var link = L.DomUtil.create(
+        //   "a",
+        //   "leaflet-control-buttons-fitdata leaflet-bar-part leaflet-bar-part-top",
+        //   container
+        // );
+        // $('<span class="ui-icon ui-icon-search"/>').appendTo($(link));
+        // link.href = "#";
+        // link.className += " t";
+        // link.setAttribute("data-t", "[title]map_controlls.zoom_to_data");
+        // i18n.translate_ui(link);
+        // L.DomEvent.addListener(
+        //   link,
+        //   "click",
+        //   function() {
+        //     // hardcoded maxZoom of 18, should be ok for most real-world use-cases
+        //     try {
+        //       ide.map.fitBounds(overpass.osmLayer.getBaseLayer().getBounds(), {
+        //         maxZoom: 18
+        //       });
+        //     } catch (e) {}
+        //     return false;
+        //   },
+        //   ide.map
+        // );
 
-        //create combobox
-        //   link=L.DomUtil.create("")
-
-        link = L.DomUtil.create(
+          var link = L.DomUtil.create(
           "a",
           "leaflet-control-buttons-myloc leaflet-bar-part",
           container
@@ -629,34 +627,34 @@ var ide = new function() {
           "leaflet-control-buttons-bboxfilter leaflet-bar-part",
           container
         );
-        // $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
-        // link.href = "#";
-        // link.className += " t";
-        // link.setAttribute("data-t", "[title]map_controlls.select_bbox");
-        // i18n.translate_ui(link);
-        // L.DomEvent.addListener(
-        //   link,
-        //   "click",
-        //   function(e) {
-        //     if (
-        //       $(e.target)
-        //         .parent()
-        //         .hasClass("disabled") // check if this button is enabled
-        //     )
-        //       return false;
-        //     if (!ide.map.bboxfilter.isEnabled()) {
-        //       ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
-        //       ide.map.bboxfilter.enable();
-        //     } else {
-        //       ide.map.bboxfilter.disable();
-        //     }
-        //     $(e.target)
-        //       .toggleClass("ui-icon-circlesmall-close")
-        //       .toggleClass("ui-icon-image");
-        //     return false;
-        //   },
-        //   ide.map
-        // );
+        $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
+        link.href = "#";
+        link.className += " t";
+        link.setAttribute("data-t", "[title]map_controlls.select_bbox");
+        i18n.translate_ui(link);
+        L.DomEvent.addListener(
+          link,
+          "click",
+          function(e) {
+            if (
+              $(e.target)
+                .parent()
+                .hasClass("disabled") // check if this button is enabled
+            )
+              return false;
+            if (!ide.map.bboxfilter.isEnabled()) {
+              ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
+              ide.map.bboxfilter.enable();
+            } else {
+              ide.map.bboxfilter.disable();
+            }
+            $(e.target)
+              .toggleClass("ui-icon-circlesmall-close")
+              .toggleClass("ui-icon-image");
+            return false;
+          },
+          ide.map
+        );
         // link = L.DomUtil.create(
         //   "a",
         //   "leaflet-control-buttons-fullscreen leaflet-bar-part",
@@ -686,11 +684,11 @@ var ide = new function() {
         //   },
         //   ide.map
         // );
-        // link = L.DomUtil.create(
-        //   "a",
-        //   "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
-        //   container
-        // );
+        link = L.DomUtil.create(
+          "a",
+          "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
+          container
+        );
         $('<span class="ui-icon ui-icon-cancel"/>').appendTo($(link));
         link.href = "#";
         link.className += " t";
@@ -729,107 +727,132 @@ var ide = new function() {
       }
     });
     // leaflet extension: search box
-    var SearchBox = L.Control.extend({
-      options: {
-        position: "topleft"
-      },
-      onAdd: function(map) {
-        var container = L.DomUtil.create(
-          "div",
-          "leaflet-control-search ui-widget"
-        );
-        container.style.position = "absolute";
-        container.style.left = "40px";
-        var inp = L.DomUtil.create("input", "", container);
-        $(
-          '<span class="ui-icon ui-icon-search" style="position:absolute; right:3px; top:3px; opacity:0.5;"/>'
-        )
-          .click(function(e) {
-            $(this)
-              .prev()
-              .autocomplete("search");
-          })
-          .insertAfter(inp);
-        inp.id = "search";
-        // hack against focus stealing leaflet :/
-        inp.onclick = function() {
-          this.focus();
-        };
-        // prevent propagation of doubleclicks to map container
-        container.ondblclick = function(e) {
-          e.stopPropagation();
-        };
-        // autocomplete functionality
-        $(inp).autocomplete({
-          source: function(request, response) {
-            // ajax (GET) request to nominatim
-            $.ajax(
-              "https://search.osmnames.org/q/" +
-                encodeURIComponent(request.term) +
-                ".js?key=" +
-                configs.osmnamesApiKey,
-              {
-                success: function(data) {
-                  // hacky firefox hack :( (it is not properly detecting json from the content-type header)
-                  if (typeof data == "string") {
-                    // if the data is a string, but looks more like a json object
-                    try {
-                      data = $.parseJSON(data);
-                    } catch (e) {}
-                  }
-                  response(
-                    $.map(data.results.slice(0, 10), function(item) {
-                      return {
-                        label: item.display_name,
-                        value: item.display_name,
-                        lat: item.lat,
-                        lon: item.lon,
-                        boundingbox: item.boundingbox
-                      };
-                    })
-                  );
-                },
-                error: function() {
-                  // todo: better error handling
-                  console.error(
-                    "An error occured while contacting the search server osmnames.org :("
-                  );
-                }
-              }
-            );
-          },
-          minLength: 2,
-          autoFocus: true,
-          select: function(event, ui) {
-            if (ui.item.boundingbox && ui.item.boundingbox instanceof Array)
-              ide.map.fitBounds(
-                L.latLngBounds([
-                  [ui.item.boundingbox[1], ui.item.boundingbox[0]],
-                  [ui.item.boundingbox[3], ui.item.boundingbox[2]]
-                ]),
-                {maxZoom: 18}
-              );
-            else ide.map.panTo(new L.LatLng(ui.item.lat, ui.item.lon));
-            this.value = "";
+    // var SearchBox = L.Control.extend({
+    //   options: {
+    //     position: "topleft"
+    //   },
+    //   onAdd: function(map) {
+    //     var container = L.DomUtil.create(
+    //       "div",
+    //       "leaflet-control-search ui-widget"
+    //     );
+    //     container.style.position = "absolute";
+    //     container.style.left = "40px";
+    //     var inp = L.DomUtil.create("input", "", container);
+    //     $(
+    //       '<span class="ui-icon ui-icon-search" style="position:absolute; right:3px; top:3px; opacity:0.5;"/>'
+    //     )
+    //       .click(function(e) {
+    //         $(this)
+    //           .prev()
+    //           .autocomplete("search");
+    //       })
+    //       .insertAfter(inp);
+    //     inp.id = "search";
+    //     // hack against focus stealing leaflet :/
+    //     inp.onclick = function() {
+    //       this.focus();
+    //     };
+    //     // prevent propagation of doubleclicks to map container
+    //     container.ondblclick = function(e) {
+    //       e.stopPropagation();
+    //     };
+    //     // autocomplete functionality
+    //     $(inp).autocomplete({
+    //       source: function(request, response) {
+    //         // ajax (GET) request to nominatim
+    //         $.ajax(
+    //           "https://search.osmnames.org/q/" +
+    //             encodeURIComponent(request.term) +
+    //             ".js?key=" +
+    //             configs.osmnamesApiKey,
+    //           {
+    //             success: function(data) {
+    //               // hacky firefox hack :( (it is not properly detecting json from the content-type header)
+    //               if (typeof data == "string") {
+    //                 // if the data is a string, but looks more like a json object
+    //                 try {
+    //                   data = $.parseJSON(data);
+    //                 } catch (e) {}
+    //               }
+    //               response(
+    //                 $.map(data.results.slice(0, 10), function(item) {
+    //                   return {
+    //                     label: item.display_name,
+    //                     value: item.display_name,
+    //                     lat: item.lat,
+    //                     lon: item.lon,
+    //                     boundingbox: item.boundingbox
+    //                   };
+    //                 })
+    //               );
+    //             },
+    //             error: function() {
+    //               // todo: better error handling
+    //               console.error(
+    //                 "An error occured while contacting the search server osmnames.org :("
+    //               );
+    //             }
+    //           }
+    //         );
+    //       },
+    //       minLength: 2,
+    //       autoFocus: true,
+    //       select: function(event, ui) {
+    //         if (ui.item.boundingbox && ui.item.boundingbox instanceof Array)
+    //           ide.map.fitBounds(
+    //             L.latLngBounds([
+    //               [ui.item.boundingbox[1], ui.item.boundingbox[0]],
+    //               [ui.item.boundingbox[3], ui.item.boundingbox[2]]
+    //             ]),
+    //             {maxZoom: 18}
+    //           );
+    //         else ide.map.panTo(new L.LatLng(ui.item.lat, ui.item.lon));
+    //         this.value = "";
+    //         return false;
+    //       },
+    //       open: function() {
+    //         $(this)
+    //           .removeClass("ui-corner-all")
+    //           .addClass("ui-corner-top");
+    //       },
+    //       close: function() {
+    //         $(this)
+    //           .addClass("ui-corner-all")
+    //           .removeClass("ui-corner-top");
+    //       }
+    //     });
+    //     $(inp).autocomplete("option", "delay", 20);
+    //     //$(inp).autocomplete().keypress(function(e) {if (e.which==13 || e.which==10) $(this).autocomplete("search");});
+    //     return container;
+    //   }
+    // });
+      var CheckBox=L.Control.extend({
+        options:{
+          position:"topleft"
+        },
+        onAdd:function (map) {
+          var container=L.DomUtil.create('div','checkboxes');
+          container.innerHTML='<lable for="atm_checkbox">Atm</lable>'+
+              '       <input   id="atm_checkbox"  type="checkbox" name="atm"    /> \n' +
+              '<label for="bank_checkbox">Bank</label>'+
+              '       <input   id="bank_checkbox" type="checkbox" name="bank"  />  \n' +
+              '\n' ;
+          container.style.position="absolute";
+          container.style.left="200px";
+          L.DomEvent.addListener(container,"click",function () {
+            ide.onRunClick();
             return false;
-          },
-          open: function() {
-            $(this)
-              .removeClass("ui-corner-all")
-              .addClass("ui-corner-top");
-          },
-          close: function() {
-            $(this)
-              .addClass("ui-corner-all")
-              .removeClass("ui-corner-top");
-          }
-        });
-        $(inp).autocomplete("option", "delay", 20);
-        //$(inp).autocomplete().keypress(function(e) {if (e.which==13 || e.which==10) $(this).autocomplete("search");});
-        return container;
-      }
+
+          },ide.map);
+
+
+          return container;
+        }
     });
-    var ComboBox=L.Control.extend({
+      ide.map.addControl(new CheckBox());
+
+        var ComboBox=L.Control.extend({
         options :{
           position:"topleft"
         },
@@ -1274,35 +1297,26 @@ var ide = new function() {
 
       makeQuery(function(position){
 
-
-
           var bankName=L.DomUtil.get("bank-combo").value;
           bankName="\""+bankName+"\"";
           var lat =  position.coords.latitude;
           var lon = position.coords.longitude;
           lat = "\""+lat +"\"";
           lon = "\""+lon +"\"";
-
-          var radius=1000;
+          var radius=100;
           radius = "\""+radius +"\"";
-
-
        var  testqry  = "<union>\n";
-
-
-
-          if (document.getElementById("atm_checkbox").checked ){
+          if (L.DomUtil.get('atm_checkbox').checked){
               // alert("sss");
-
               testqry = testqry +
                   "  <query type=\"node\">\n" +
                   "     <has-kv k=\"amenity\" v=\"atm\"/>\n" +
                   "<has-kv k=\"name\" v="+bankName+"/>\n"+
                   "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
                   "  </query>\n" ;
-
           }
-          if (document.getElementById("bank_checkbox").checked){
+             if (L.DomUtil.get('bank_checkbox').checked){
+
               testqry = testqry +
                   "  <query type=\"node\">\n" +
                   "  <has-kv k=\"amenity\" v=\"bank\"/>\n" +
@@ -1310,15 +1324,9 @@ var ide = new function() {
                   "<around lat=" + lat +" lon="+lon+" radius=\"1000\"/> \n"+
                   "  </query>\n";
           }
-
-
           testqry = testqry +
               "</union>\n" +
               "<print/>";
-
-
-
-
           var query = testqry;
           console.log(query ,"############")
 
@@ -1360,12 +1368,6 @@ var ide = new function() {
 
 
           });
-
-
-
-
-
-
 
   };
   this.setQuery = function(query) {
@@ -1627,6 +1629,7 @@ var ide = new function() {
   // };
   this.onRunClick = function() {
 
+    // alert("on runnn!")
     ide.update_map();
 
       makeQuery(function(position){
