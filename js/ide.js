@@ -37,6 +37,7 @@ import shortcuts from "./shortcuts";
 var copyData = undefined;
 var theMarker = undefined;
 var clickedLanLon = undefined;
+var crntPsn = undefined;
 
 
 $(document).on("copy", function (e) {
@@ -186,7 +187,8 @@ var ide = new function () {
         },
         abort: function () {
             if (typeof ide.waiter.onAbort == "function") {
-                ide.waiter.addInfo("aborting");
+                //ide.waiter.addInfo("aborting");
+                ide.waiter.addInfo("");
                 ide.waiter.onAbort(ide.waiter.close);
             }
         }
@@ -217,7 +219,7 @@ var ide = new function () {
         var m_marker = null;
 
         var markerIcon = L.icon({
-            iconUrl: 'icons/markers/Map-Marker-Inside-Pink-icon.png',
+            iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
             iconSize: [40, 40] // size of the icon
             //shadowSize: [50, 65], // size of the shadow
             //iconAnchor: [32, 100], // point of the icon which will correspond to marker's location
@@ -231,9 +233,11 @@ var ide = new function () {
         }).on('locationfound', function (e) {
             if (m_marker !== null) {
                 ide.map.removeLayer(m_marker);
+                crntPsn = undefined;
             }
             m_marker = new L.Marker(e.latlng, {icon: markerIcon});
-            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هستید.</b><br>");
+            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هسستید.</b><br>");
+            crntPsn = m_marker;
         });
 
 
@@ -242,7 +246,7 @@ var ide = new function () {
     function getClickedLanLon(e) {
 
         clickedLanLon = e.latlng;
-        console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
+        //console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
 
         var markerIcon = L.icon({
             iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
@@ -261,7 +265,8 @@ var ide = new function () {
 
 
     this.init = function () {
-        ide.waiter.addInfo("ide starting up");
+        //ide.waiter.addInfo("ide starting up");
+        ide.waiter.addInfo("");
         // (very raw) compatibility check <- TODO: put this into its own function
         if (
             jQuery.support.cors != true ||
@@ -283,10 +288,12 @@ var ide = new function () {
             $("#warning-unsupported-browser").dialog({modal: true});
         }
         // load settings
-        ide.waiter.addInfo("load settings");
+        //ide.waiter.addInfo("load settings");
+        ide.waiter.addInfo("");
         settings.load();
         // translate ui
-        ide.waiter.addInfo("translate ui");
+        //ide.waiter.addInfo("translate ui");
+        ide.waiter.addInfo("");
         var me = this;
         i18n.translate().then(function () {
             initAfterI18n.call(me);
@@ -302,7 +309,8 @@ var ide = new function () {
         // set up additional libraries
         moment.locale(i18n.getLanguage());
         // parse url string parameters
-        ide.waiter.addInfo("parse url parameters");
+        //ide.waiter.addInfo("parse url parameters");
+        ide.waiter.addInfo("");
         var args = urlParameters(location.search);
         // set appropriate settings
         if (args.has_coords) {
@@ -322,7 +330,8 @@ var ide = new function () {
         if (typeof history.replaceState == "function")
             history.replaceState({}, "", "."); // drop startup parameters
 
-        ide.waiter.addInfo("initialize page");
+        //ide.waiter.addInfo("initialize page");
+        ide.waiter.addInfo("");
         // init page layout
         var isInitialAspectPortrait = $(window).width() / $(window).height() < 0.8;
         if (settings.editor_width != "" && !isInitialAspectPortrait) {
@@ -518,15 +527,12 @@ var ide = new function () {
             mode: "javascript"
         });
 
-
-
         // init leaflet
         ide.map = new L.Map("map", {
             attributionControl: false,
             minZoom: 0,
             maxZoom: configs.maxMapZoom,
-            worldCopyJump: false,
-           // layers:
+            worldCopyJump: false
         });
         var tilesUrl = settings.tile_server;
         var tilesAttrib = configs.tileServerAttribution;
@@ -538,36 +544,23 @@ var ide = new function () {
             maxZoom: ide.map.options.maxZoom
         });
 
+        //ide.map.on('click', function (e) {
+        //
+        //    clickedLanLon = e.latlng;
+        //    console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
+        //
+        //    var markerIcon = L.icon({
+        //        iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
+        //        iconSize: [40, 40]
+        //    });
+        //
+        //    if (theMarker !== undefined) {
+        //        ide.map.removeLayer(theMarker);
+        //    }
+        //    theMarker = new L.Marker(e.latlng, {icon: markerIcon});
+        //    theMarker.addTo(ide.map);
+        //});
 
-
-
-        // ide.map.on('click', function (e) {
-        //
-        //
-        //     var popLocation= e.latlng;
-        //     var popup = L.popup()
-        //         .setLatLng(popLocation)
-        //         .setContent('<input type="button">search</input>')
-        //         .openOn(ide.map);
-        //
-        //
-        //
-        //     clickedLanLon = e.latlng;
-        //     console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
-        //
-        //     var markerIcon = L.icon({
-        //         iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
-        //         iconSize: [40, 40]
-        //     });
-        //
-        //     if (theMarker !== undefined) {
-        //         ide.map.removeLayer(theMarker);
-        //     }
-        //     theMarker = new L.Marker(e.latlng, {icon: markerIcon});
-        //     theMarker.addTo(ide.map);
-        // });
-
-        // console.log("clickedLanLon: " + clickedLanLon);
 
         attribControl = new L.Control.Attribution({prefix: ""});
         attribControl.addAttribution(tilesAttrib);
@@ -590,16 +583,16 @@ var ide = new function () {
         });
 
         // tabs
-        $("#dataviewer > div#data")[0].style.zIndex = -1001;
-        $(".tabs a.button").bind("click", function (e) {
-            if ($(e.target).hasClass("active")) {
-                return;
-            } else {
-                $("#dataviewer > div#data")[0].style.zIndex =
-                    -1 * $("#dataviewer > div#data")[0].style.zIndex;
-                $(".tabs a.button").toggleClass("active");
-            }
-        });
+        //$("#dataviewer > div#data")[0].style.zIndex = -1001;
+        //$(".tabs a.button").bind("click", function (e) {
+        //    if ($(e.target).hasClass("active")) {
+        //        return;
+        //    } else {
+        //        $("#dataviewer > div#data")[0].style.zIndex =
+        //            -1 * $("#dataviewer > div#data")[0].style.zIndex;
+        //        $(".tabs a.button").toggleClass("active");
+        //    }
+        //});
 
         //// wait spinner
         //$(document).on({
@@ -618,8 +611,9 @@ var ide = new function () {
         //});
 
         // keyboard event listener
-        $(document).keydown(ide.onKeyPress);
-
+        //$(document).keydown(ide.onKeyPress);
+        ide.map.zoomControl.remove();
+        L.control.zoom({zoomInText: 'text'}).addTo(ide.map);
         // leaflet extension: more map controls
         var MapButtons = L.Control.extend({
             options: {
@@ -680,39 +674,39 @@ var ide = new function () {
                     },
                     ide.map
                 );
-                link = L.DomUtil.create(
-                    "a",
-                    "leaflet-control-buttons-bboxfilter leaflet-bar-part",
-                    container
-                );
-                $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
-                link.href = "#";
-                link.className += " t";
-                link.setAttribute("data-t", "[title]map_controlls.select_bbox");
-                i18n.translate_ui(link);
-                L.DomEvent.addListener(
-                    link,
-                    "click",
-                    function (e) {
-                        if (
-                            $(e.target)
-                                .parent()
-                                .hasClass("disabled") // check if this button is enabled
-                        )
-                            return false;
-                        if (!ide.map.bboxfilter.isEnabled()) {
-                            ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
-                            ide.map.bboxfilter.enable();
-                        } else {
-                            ide.map.bboxfilter.disable();
-                        }
-                        $(e.target)
-                            .toggleClass("ui-icon-circlesmall-close")
-                            .toggleClass("ui-icon-image");
-                        return false;
-                    },
-                    ide.map
-                );
+                //link = L.DomUtil.create(
+                //    "a",
+                //    "leaflet-control-buttons-bboxfilter leaflet-bar-part",
+                //    container
+                //);
+                //$('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
+                //link.href = "#";
+                //link.className += " t";
+                //link.setAttribute("data-t", "[title]map_controlls.select_bbox");
+                //i18n.translate_ui(link);
+                //L.DomEvent.addListener(
+                //    link,
+                //    "click",
+                //    function (e) {
+                //        if (
+                //            $(e.target)
+                //                .parent()
+                //                .hasClass("disabled") // check if this button is enabled
+                //        )
+                //            return false;
+                //        if (!ide.map.bboxfilter.isEnabled()) {
+                //            ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
+                //            ide.map.bboxfilter.enable();
+                //        } else {
+                //            ide.map.bboxfilter.disable();
+                //        }
+                //        $(e.target)
+                //            .toggleClass("ui-icon-circlesmall-close")
+                //            .toggleClass("ui-icon-image");
+                //        return false;
+                //    },
+                //    ide.map
+                //);
                 // link = L.DomUtil.create(
                 //   "a",
                 //   "leaflet-control-buttons-fullscreen leaflet-bar-part",
@@ -747,9 +741,6 @@ var ide = new function () {
                     "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
                     container
                 );
-
-            // .addClass("crosshairs")
-
                 $('<span class="ui-icon ui-icon-cancel"/>').appendTo($(link));
                 link.href = "#";
                 link.className += " t";
@@ -762,11 +753,17 @@ var ide = new function () {
                         e.preventDefault();
                         if (ide.map.hasLayer(overpass.osmLayer))
                             ide.map.removeLayer(overpass.osmLayer);
-                        else if (theMarker !== undefined) {
-                            ide.map.removeLayer(theMarker);
+                        //else if (theMarker !== undefined) {
+                        //    ide.map.removeLayer(theMarker);
+                        //    //alert("injaaa");
+                        //}
+                        if (crntPsn !== undefined) {
+                            ide.map.removeLayer(crntPsn);
                             //alert("injaaa");
                         }
-                        else ide.map.addLayer(overpass.osmLayer);
+                        else {
+                            ide.map.addLayer(overpass.osmLayer);
+                        }
                         return false;
                     },
                     ide.map
@@ -774,14 +771,7 @@ var ide = new function () {
                 return container;
             }
         });
-
-          ide.map.addControl(new MapButtons());
-
-       // ide.map.addControl( L.layerGroup([mapButtons, combobox, checkbox])
-
-       // );
-
-
+        ide.map.addControl(new MapButtons());
         // prevent propagation of doubleclicks on map controls
         $(".leaflet-control-buttons > a").bind("dblclick", function (e) {
             e.stopPropagation();
@@ -899,8 +889,7 @@ var ide = new function () {
         //     return container;
         //   }
         // });
-        //L.myCheckBoxLayer
-         var CheckBox = L.Control.extend({
+        var CheckBox = L.Control.extend({
             options: {
                 position: "topleft"
             },
@@ -923,13 +912,7 @@ var ide = new function () {
                 return container;
             }
         });
-
-
-
-          //var checks=L.layerGroup(newCheck);
-        //  L.control.layers(newCheck).addTo(ide.map);
-           ide.map.addControl(   new CheckBox());
-
+        ide.map.addControl(new CheckBox());
 
         var ComboBox = L.Control.extend({
             options: {
@@ -937,85 +920,56 @@ var ide = new function () {
             },
             onAdd: function (map) {
 
-                var container = L.DomUtil.create('div', 'combobox blue');
-                console.log(container);
-                container.innerHTML = '<select id="combobox blue">' +
-                    '<option>بانک ملی</option>' +
+                var container = L.DomUtil.create('div', 'info legend');
+                container.innerHTML = '<select id="bank-combo">' +
+                    '<option></option>' +
                     '<option>بانک آینده</option>' +
                     '<option>بانک سرمایه</option>' +
                     '<option>بانک انصار</option>' +
                     '<option>بانک اقتصاد نوین</option>' +
                     '<option>بانک مهراقتصاد</option>' +
-                    '<option></option>' +
+                    '<option>بانک ملی</option>' +
                     '</select>';
-
-
-                // container.innerHTML ='  <div class="dropdown" id="combobox blue">\n' +
-                //     '                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials\n' +
-                //     '                    <span class="caret"></span></button>\n' +
-                //     '                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1"> \n' +
-                //     '                    <li role="presentation">HTML</li>\n' +
-                //     '                <li role="presentation">CSS</li>\n' +
-                //     '                <li role="presentation">JavaScript</li>\n' +
-                //     '                <li role="presentation">About Us</li>\n' +
-                //     '                </ul>\n' +
-                //     '                </div>\n' +
-                //     '             ';
-
                 container.style.position = "absolute";
                 container.style.left = "50px";
-
-
-
-
-
-
-
-
-
-
-
-
-
                 //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
                 return container;
 
             }
 
         });
-
         ide.map.addControl(new ComboBox());
 
         // ide.map.addControl(new SearchBox());
         // add cross hairs to map
-        // $('<span class="ui-icon ui-icon-plus" />')
-        //     .addClass("crosshairs")
-        //     .hide()
-        //     .appendTo("#map");
-        // if (settings.enable_crosshairs) $(".crosshairs").show();
+        $('<span class="ui-icon ui-icon-plus" />')
+            .addClass("crosshairs")
+            .hide()
+            .appendTo("#map");
+        if (settings.enable_crosshairs) $(".crosshairs").show();
 
-        // ide.map.bboxfilter = new L.LocationFilter({
-        //     enable: !true,
-        //     adjustButton: false,
-        //     enableButton: false
-        // }).addTo(ide.map);
+        ide.map.bboxfilter = new L.LocationFilter({
+            enable: !true,
+            adjustButton: false,
+            enableButton: false
+        }).addTo(ide.map);
 
-        // ide.map.on("popupopen popupclose", function (e) {
-        //     if (typeof e.popup.layer != "undefined") {
-        //         var layer = e.popup.layer.placeholder || e.popup.layer;
-        //         // re-call style handler to eventually modify the style of the clicked feature
-        //         var stl = overpass.osmLayer._baseLayer.options.style(
-        //             layer.feature,
-        //             e.type == "popupopen"
-        //         );
-        //         if (typeof layer.eachLayer != "function") {
-        //             if (typeof layer.setStyle == "function") layer.setStyle(stl); // other objects (pois, ways)
-        //         } else
-        //             layer.eachLayer(function (layer) {
-        //                 if (typeof layer.setStyle == "function") layer.setStyle(stl);
-        //             }); // for multipolygons!
-        //     }
-        // });
+        ide.map.on("popupopen popupclose", function (e) {
+            if (typeof e.popup.layer != "undefined") {
+                var layer = e.popup.layer.placeholder || e.popup.layer;
+                // re-call style handler to eventually modify the style of the clicked feature
+                var stl = overpass.osmLayer._baseLayer.options.style(
+                    layer.feature,
+                    e.type == "popupopen"
+                );
+                if (typeof layer.eachLayer != "function") {
+                    if (typeof layer.setStyle == "function") layer.setStyle(stl); // other objects (pois, ways)
+                } else
+                    layer.eachLayer(function (layer) {
+                        if (typeof layer.setStyle == "function") layer.setStyle(stl);
+                    }); // for multipolygons!
+            }
+        });
 
         // init overpass object
         overpass.init();
@@ -1403,21 +1357,21 @@ var ide = new function () {
 
         getCurrentPsn(function (position) {
 
-            var bankName = L.DomUtil.get("combobox blue").value;
+            var bankName = L.DomUtil.get("bank-combo").value;
             bankName = "\"" + bankName + "\"";
             var lat, lon;
 
-            if (clickedLanLon !== undefined) {
-
-                lat = clickedLanLon.lat;
-                lon = clickedLanLon.lng;
-                console.log("clickedLanLon ===> ", "lat: ", lat, "lon: ", lon);
-
-            } else {
-                lat = position.coords.latitude;
-                lon = position.coords.longitude;
-                console.log("currentpsn ===> ", "lat: ", lat, "lon: ", lon);
-            }
+            //if (clickedLanLon !== undefined) {
+            //
+            //    lat = clickedLanLon.lat;
+            //    lon = clickedLanLon.lng;
+            //    console.log("clickedLanLon ===> ", "lat: ", lat, "lon: ", lon);
+            //
+            //} else {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            //    console.log("currentpsn ===> ", "lat: ", lat, "lon: ", lon);
+            //}
             lat = "\"" + lat + "\"";
             lon = "\"" + lon + "\"";
             var radius = 100;
@@ -2720,13 +2674,15 @@ var ide = new function () {
         // 1. render canvas from map tiles
         // hide map controlls in this step :/
         // todo: also hide popups?
-        ide.waiter.addInfo("prepare map");
+        //ide.waiter.addInfo("prepare map");
+        ide.waiter.addInfo("");
         $("#map .leaflet-control-container .leaflet-top").hide();
         $("#data_stats").hide();
         if (settings.export_image_attribution) attribControl.addTo(ide.map);
         if (!settings.export_image_scale) scaleControl.removeFrom(ide.map);
         // try to use crossOrigin image loading. osm tiles should be served with the appropriate headers -> no need of bothering the proxy
-        ide.waiter.addInfo("rendering map tiles");
+        //ide.waiter.addInfo("rendering map tiles");
+        ide.waiter.addInfo("");
         $("#map .leaflet-overlay-pane").hide();
         html2canvas(document.getElementById("map"), {
             useCORS: true,
@@ -2739,7 +2695,8 @@ var ide = new function () {
                 if (!settings.export_image_scale) scaleControl.addTo(ide.map);
                 if (settings.show_data_stats) $("#data_stats").show();
                 $("#map .leaflet-control-container .leaflet-top").show();
-                ide.waiter.addInfo("rendering map data");
+                //ide.waiter.addInfo("rendering map data");
+                ide.waiter.addInfo("");
                 // 2. render overlay data onto canvas
                 canvas.id = "render_canvas";
                 var ctx = canvas.getContext("2d");
@@ -3102,8 +3059,10 @@ var ide = new function () {
     };
     this.update_map = function () {
 
-        ide.waiter.open(i18n.t("waiter.processing_query"));
-        ide.waiter.addInfo("resetting map");
+        //ide.waiter.open(i18n.t("waiter.processing_query"));
+        ide.waiter.open("");
+        //ide.waiter.addInfo("resetting map");
+        ide.waiter.addInfo("");
         $("#data_stats").remove();
         // resets previously highlighted error lines
         this.resetErrors();
@@ -3113,7 +3072,8 @@ var ide = new function () {
             ide.map.removeLayer(overpass.osmLayer);
         $("#map_blank").remove();
 
-        ide.waiter.addInfo("building query");
+        //ide.waiter.addInfo("building query");
+        ide.waiter.addInfo("");
         // run the query via the overpass object
         ide.getQuery(function (query) {
             var query_lang = ide.getQueryLang();
