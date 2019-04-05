@@ -233,7 +233,7 @@ var ide = new function () {
                 ide.map.removeLayer(m_marker);
             }
             m_marker = new L.Marker(e.latlng, {icon: markerIcon});
-            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هسستید.</b><br>");
+            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هستید.</b><br>");
         });
 
 
@@ -518,12 +518,15 @@ var ide = new function () {
             mode: "javascript"
         });
 
+
+
         // init leaflet
         ide.map = new L.Map("map", {
             attributionControl: false,
             minZoom: 0,
             maxZoom: configs.maxMapZoom,
-            worldCopyJump: false
+            worldCopyJump: false,
+           // layers:
         });
         var tilesUrl = settings.tile_server;
         var tilesAttrib = configs.tileServerAttribution;
@@ -535,24 +538,36 @@ var ide = new function () {
             maxZoom: ide.map.options.maxZoom
         });
 
-        ide.map.on('click', function (e) {
 
-            clickedLanLon = e.latlng;
-            console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
 
-            var markerIcon = L.icon({
-                iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
-                iconSize: [40, 40]
-            });
 
-            if (theMarker !== undefined) {
-                ide.map.removeLayer(theMarker);
-            }
-            theMarker = new L.Marker(e.latlng, {icon: markerIcon});
-            theMarker.addTo(ide.map);
-        });
+        // ide.map.on('click', function (e) {
+        //
+        //
+        //     var popLocation= e.latlng;
+        //     var popup = L.popup()
+        //         .setLatLng(popLocation)
+        //         .setContent('<input type="button">search</input>')
+        //         .openOn(ide.map);
+        //
+        //
+        //
+        //     clickedLanLon = e.latlng;
+        //     console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
+        //
+        //     var markerIcon = L.icon({
+        //         iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
+        //         iconSize: [40, 40]
+        //     });
+        //
+        //     if (theMarker !== undefined) {
+        //         ide.map.removeLayer(theMarker);
+        //     }
+        //     theMarker = new L.Marker(e.latlng, {icon: markerIcon});
+        //     theMarker.addTo(ide.map);
+        // });
 
-        console.log("clickedLanLon: " + clickedLanLon);
+        // console.log("clickedLanLon: " + clickedLanLon);
 
         attribControl = new L.Control.Attribution({prefix: ""});
         attribControl.addAttribution(tilesAttrib);
@@ -732,6 +747,9 @@ var ide = new function () {
                     "leaflet-control-buttons-clearoverlay leaflet-bar-part leaflet-bar-part-bottom",
                     container
                 );
+
+            // .addClass("crosshairs")
+
                 $('<span class="ui-icon ui-icon-cancel"/>').appendTo($(link));
                 link.href = "#";
                 link.className += " t";
@@ -756,7 +774,14 @@ var ide = new function () {
                 return container;
             }
         });
-        ide.map.addControl(new MapButtons());
+
+          ide.map.addControl(new MapButtons());
+
+       // ide.map.addControl( L.layerGroup([mapButtons, combobox, checkbox])
+
+       // );
+
+
         // prevent propagation of doubleclicks on map controls
         $(".leaflet-control-buttons > a").bind("dblclick", function (e) {
             e.stopPropagation();
@@ -874,7 +899,8 @@ var ide = new function () {
         //     return container;
         //   }
         // });
-        var CheckBox = L.Control.extend({
+        //L.myCheckBoxLayer
+         var CheckBox = L.Control.extend({
             options: {
                 position: "topleft"
             },
@@ -897,7 +923,13 @@ var ide = new function () {
                 return container;
             }
         });
-        ide.map.addControl(new CheckBox());
+
+
+
+          //var checks=L.layerGroup(newCheck);
+        //  L.control.layers(newCheck).addTo(ide.map);
+           ide.map.addControl(   new CheckBox());
+
 
         var ComboBox = L.Control.extend({
             options: {
@@ -905,8 +937,9 @@ var ide = new function () {
             },
             onAdd: function (map) {
 
-                var container = L.DomUtil.create('div', 'info legend');
-                container.innerHTML = '<select id="bank-combo">' +
+                var container = L.DomUtil.create('div', 'combobox blue');
+                console.log(container);
+                container.innerHTML = '<select id="combobox blue">' +
                     '<option>بانک ملی</option>' +
                     '<option>بانک آینده</option>' +
                     '<option>بانک سرمایه</option>' +
@@ -915,46 +948,74 @@ var ide = new function () {
                     '<option>بانک مهراقتصاد</option>' +
                     '<option></option>' +
                     '</select>';
+
+
+                // container.innerHTML ='  <div class="dropdown" id="combobox blue">\n' +
+                //     '                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials\n' +
+                //     '                    <span class="caret"></span></button>\n' +
+                //     '                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1"> \n' +
+                //     '                    <li role="presentation">HTML</li>\n' +
+                //     '                <li role="presentation">CSS</li>\n' +
+                //     '                <li role="presentation">JavaScript</li>\n' +
+                //     '                <li role="presentation">About Us</li>\n' +
+                //     '                </ul>\n' +
+                //     '                </div>\n' +
+                //     '             ';
+
                 container.style.position = "absolute";
                 container.style.left = "50px";
+
+
+
+
+
+
+
+
+
+
+
+
+
                 //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
                 return container;
 
             }
 
         });
+
         ide.map.addControl(new ComboBox());
 
         // ide.map.addControl(new SearchBox());
         // add cross hairs to map
-        $('<span class="ui-icon ui-icon-plus" />')
-            .addClass("crosshairs")
-            .hide()
-            .appendTo("#map");
-        if (settings.enable_crosshairs) $(".crosshairs").show();
+        // $('<span class="ui-icon ui-icon-plus" />')
+        //     .addClass("crosshairs")
+        //     .hide()
+        //     .appendTo("#map");
+        // if (settings.enable_crosshairs) $(".crosshairs").show();
 
-        ide.map.bboxfilter = new L.LocationFilter({
-            enable: !true,
-            adjustButton: false,
-            enableButton: false
-        }).addTo(ide.map);
+        // ide.map.bboxfilter = new L.LocationFilter({
+        //     enable: !true,
+        //     adjustButton: false,
+        //     enableButton: false
+        // }).addTo(ide.map);
 
-        ide.map.on("popupopen popupclose", function (e) {
-            if (typeof e.popup.layer != "undefined") {
-                var layer = e.popup.layer.placeholder || e.popup.layer;
-                // re-call style handler to eventually modify the style of the clicked feature
-                var stl = overpass.osmLayer._baseLayer.options.style(
-                    layer.feature,
-                    e.type == "popupopen"
-                );
-                if (typeof layer.eachLayer != "function") {
-                    if (typeof layer.setStyle == "function") layer.setStyle(stl); // other objects (pois, ways)
-                } else
-                    layer.eachLayer(function (layer) {
-                        if (typeof layer.setStyle == "function") layer.setStyle(stl);
-                    }); // for multipolygons!
-            }
-        });
+        // ide.map.on("popupopen popupclose", function (e) {
+        //     if (typeof e.popup.layer != "undefined") {
+        //         var layer = e.popup.layer.placeholder || e.popup.layer;
+        //         // re-call style handler to eventually modify the style of the clicked feature
+        //         var stl = overpass.osmLayer._baseLayer.options.style(
+        //             layer.feature,
+        //             e.type == "popupopen"
+        //         );
+        //         if (typeof layer.eachLayer != "function") {
+        //             if (typeof layer.setStyle == "function") layer.setStyle(stl); // other objects (pois, ways)
+        //         } else
+        //             layer.eachLayer(function (layer) {
+        //                 if (typeof layer.setStyle == "function") layer.setStyle(stl);
+        //             }); // for multipolygons!
+        //     }
+        // });
 
         // init overpass object
         overpass.init();
@@ -1342,7 +1403,7 @@ var ide = new function () {
 
         getCurrentPsn(function (position) {
 
-            var bankName = L.DomUtil.get("bank-combo").value;
+            var bankName = L.DomUtil.get("combobox blue").value;
             bankName = "\"" + bankName + "\"";
             var lat, lon;
 

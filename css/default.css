@@ -22,23 +22,21 @@ body {
     width: 45%;
 }
 
-#dataviewer {
+/*#dataviewer {*/
 
-    background-color: #DD8833;
-    padding: 0;
-    margin: 0;
-    border-left:1px solid #FFFFFF;
-    height: auto;
-    position:absolute;
-    top:51px;
-    bottom:0;
-    left:45%;
-    right:0;
-background-color: #DD8833;
+    /*background-color: #DD8833;*/
+    /*padding: 0;*/
+    /*margin: 0;*/
+    /*border-left:1px solid #FFFFFF;*/
+    /*height: auto;*/
+    /*position:absolute;*/
+    /*top:51px;*/
+    /*bottom:0;*/
+    /*left:45%;*/
+    /*right:0;*/
+    /*border-left: 1px solid #4b2f89;*/
 
-    border-left: 1px solid #4b2f89;
-
-}
+/*}*/
 
 #editor.portrait {
     height: 25%;
@@ -174,6 +172,7 @@ a.external {
     margin: 0;
     top: 5%;
     -ms-transform: translateY(-50%);
+
 }
 
          .tabs {
@@ -182,6 +181,36 @@ a.external {
              top: 25px;
              right: 5px;
          }
+
+.combobox{
+
+    background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+    height:  29px;
+    overflow: hidden;
+    width: 150px;
+
+}
+
+.combobox select {
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    font-size: 14px;
+    height: 29px;
+    padding: 5px; /* If you add too much padding here, the options won't show in IE */
+    width: 150px;
+    background-color: rgba(0, 34, 56, 0.62);
+}
+
+.blue    { background-color: rgba(255, 254, 253, 0.83); }
+
+.blue select    { color: rgb(234, 233, 233); }
+
+.combobox{
+    background-color: rgba(2, 100, 112, 0.09);
+}
 
 .button {
     border: 1px solid #ccc;
