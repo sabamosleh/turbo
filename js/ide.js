@@ -912,12 +912,12 @@ var ide = new function () {
                     '       <input   id="bank_checkbox" type="checkbox" name="bank"  />  \n' +
                     '\n';
                 container.style.position = "absolute";
-                container.style.left = "200px";
-                L.DomEvent.addListener(container, "click", function () {
-                    ide.onRunClick();
-                    return false;
-
-                }, ide.map);
+                container.style.left = "215px";
+                // L.DomEvent.addListener(container, "click", function () {
+                //     ide.onRunClick();
+                //     return false;
+                //
+                // }, ide.map);
 
 
                 return container;
@@ -966,17 +966,6 @@ var ide = new function () {
                 container.style.left = "50px";
 
 
-
-
-
-
-
-
-
-
-
-
-
                 //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
                 return container;
 
@@ -985,6 +974,40 @@ var ide = new function () {
         });
 
         ide.map.addControl(new ComboBox());
+
+
+        var RunButton=L.Control.extend({
+
+            options: {
+                position: "topleft"
+            },
+            onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'btn-run');
+            container.innerHTML = '<input type="button" class="btn-run" value="برو">';
+            container.style.position = "absolute";
+            container.style.left = "300px";
+            L.DomEvent.addListener(container, "click", function () {
+                ide.onRunClick();
+                return false;
+
+            }, ide.map);
+
+
+            return container;
+        }
+
+
+        });
+
+        ide.map.addControl(new RunButton());
+
+
+
+
+
+
+
+
 
         // ide.map.addControl(new SearchBox());
         // add cross hairs to map
