@@ -188,6 +188,8 @@ a.external {
     overflow: hidden;
     width: 150px;
 
+
+
 }
 
 .combobox select {
@@ -201,14 +203,22 @@ a.external {
     padding: 5px; /* If you add too much padding here, the options won't show in IE */
     width: 150px;
     background-color: rgba(0, 34, 56, 0.62);
+    text-align:center;
+
 }
 
-.blue    { background-color: rgba(255, 254, 253, 0.83); }
+.blue    {
+    background-color: rgba(255, 254, 253, 0.83);
 
-.blue select    { color: rgb(234, 233, 233); }
+
+}
+
+.blue select    { color: rgb(234, 233, 233);
+    }
 
 .combobox{
     background-color: rgba(2, 100, 112, 0.09);
+
 }
 
 
