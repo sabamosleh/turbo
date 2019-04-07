@@ -951,23 +951,9 @@ var ide = new function () {
                     '</select>';
 
 
-                // container.innerHTML ='  <div class="dropdown" id="combobox blue">\n' +
-                //     '                    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Tutorials\n' +
-                //     '                    <span class="caret"></span></button>\n' +
-                //     '                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1"> \n' +
-                //     '                    <li role="presentation">HTML</li>\n' +
-                //     '                <li role="presentation">CSS</li>\n' +
-                //     '                <li role="presentation">JavaScript</li>\n' +
-                //     '                <li role="presentation">About Us</li>\n' +
-                //     '                </ul>\n' +
-                //     '                </div>\n' +
-                //     '             ';
-
                 container.style.position = "absolute";
                 container.style.left = "50px";
 
-
-                //   container.firstChild.onmousedown = container.firstChild.ondblclick = L.DomEvent.stopPropagation;
                 return container;
 
             }
@@ -1428,7 +1414,7 @@ var ide = new function () {
         getCurrentPsn(function (position) {
 
             var bankName = L.DomUtil.get("combobox blue").value;
-            console.log("bank name is---->"+bankName+"");
+            // console.log("bank name is---->"+bankName+"");
 
             var lat, lon;
 
