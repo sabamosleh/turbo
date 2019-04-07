@@ -37,6 +37,7 @@ import shortcuts from "./shortcuts";
 var copyData = undefined;
 var theMarker = undefined;
 var clickedLanLon = undefined;
+var crntPsn = undefined;
 
 
 $(document).on("copy", function (e) {
@@ -186,7 +187,8 @@ var ide = new function () {
         },
         abort: function () {
             if (typeof ide.waiter.onAbort == "function") {
-                ide.waiter.addInfo("aborting");
+                //ide.waiter.addInfo("aborting");
+                ide.waiter.addInfo("");
                 ide.waiter.onAbort(ide.waiter.close);
             }
         }
@@ -215,9 +217,10 @@ var ide = new function () {
     function setMarkerOnCrntPsn() {
 
         var m_marker = null;
+        var circle = null;
 
         var markerIcon = L.icon({
-            iconUrl: 'icons/markers/Map-Marker-Inside-Pink-icon.png',
+            iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
             iconSize: [40, 40] // size of the icon
             //shadowSize: [50, 65], // size of the shadow
             //iconAnchor: [32, 100], // point of the icon which will correspond to marker's location
@@ -231,18 +234,55 @@ var ide = new function () {
         }).on('locationfound', function (e) {
             if (m_marker !== null) {
                 ide.map.removeLayer(m_marker);
+                crntPsn = undefined;
+            }
+            if (circle !== null) {
+                ide.map.removeLayer(circle);
+
             }
             m_marker = new L.Marker(e.latlng, {icon: markerIcon});
-            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هستید.</b><br>");
+            m_marker.addTo(ide.map).bindPopup("<b>شما اینجا هسستید.</b><br>");
+            crntPsn = m_marker;
+//============================
+            //now draw a circle around the current position
+
+            var circleCenter = [e.latlng.lat, e.latlng.lng];
+            var circleOptions = {
+                color: 'blue',
+                fillColor: 'blue'
+                //fillOpacity: 0,
+                //weight: 1
+            }
+
+            circle =new  L.circle(circleCenter, 100, circleOptions);
+            circle.addTo(ide.map);
+
+            ide.map.setView(e.latlang, settings.coords_zoom);
+
         });
 
 
     }
 
+
+    function drawCircle(lat, lng) {
+
+        var circleCenter = [lat, lng];
+        var circleOptions = {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0,
+            weight: 1
+        }
+
+        var circle = L.circle(circleCenter, 50, circleOptions);
+        circle.addTo(ide.map);
+    }
+
     function getClickedLanLon(e) {
 
         clickedLanLon = e.latlng;
-        console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
+        //console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
 
         var markerIcon = L.icon({
             iconUrl: 'icons/markers/Map-Marker-Outside-Pink-icon.png',
@@ -261,7 +301,8 @@ var ide = new function () {
 
 
     this.init = function () {
-        ide.waiter.addInfo("ide starting up");
+        //ide.waiter.addInfo("ide starting up");
+        ide.waiter.addInfo("");
         // (very raw) compatibility check <- TODO: put this into its own function
         if (
             jQuery.support.cors != true ||
@@ -283,10 +324,12 @@ var ide = new function () {
             $("#warning-unsupported-browser").dialog({modal: true});
         }
         // load settings
-        ide.waiter.addInfo("load settings");
+        //ide.waiter.addInfo("load settings");
+        ide.waiter.addInfo("");
         settings.load();
         // translate ui
-        ide.waiter.addInfo("translate ui");
+        //ide.waiter.addInfo("translate ui");
+        ide.waiter.addInfo("");
         var me = this;
         i18n.translate().then(function () {
             initAfterI18n.call(me);
@@ -302,7 +345,8 @@ var ide = new function () {
         // set up additional libraries
         moment.locale(i18n.getLanguage());
         // parse url string parameters
-        ide.waiter.addInfo("parse url parameters");
+        //ide.waiter.addInfo("parse url parameters");
+        ide.waiter.addInfo("");
         var args = urlParameters(location.search);
         // set appropriate settings
         if (args.has_coords) {
@@ -322,7 +366,8 @@ var ide = new function () {
         if (typeof history.replaceState == "function")
             history.replaceState({}, "", "."); // drop startup parameters
 
-        ide.waiter.addInfo("initialize page");
+        //ide.waiter.addInfo("initialize page");
+        ide.waiter.addInfo("");
         // init page layout
         var isInitialAspectPortrait = $(window).width() / $(window).height() < 0.8;
         if (settings.editor_width != "" && !isInitialAspectPortrait) {
@@ -526,7 +571,7 @@ var ide = new function () {
             minZoom: 0,
             maxZoom: configs.maxMapZoom,
             worldCopyJump: false,
-           // layers:
+            zoomControl : false
         });
         var tilesUrl = settings.tile_server;
         var tilesAttrib = configs.tileServerAttribution;
@@ -589,6 +634,22 @@ var ide = new function () {
             settings.save(); // save settings
         });
 
+        //add new zoom control insted of default one
+        var zoomOptions = {
+            zoomInText: '+',
+            zoomOutText: '-',
+            zoomOutTitle: 'کوچکنمایی',
+            zoomInTitle:'بزرگنمایی',
+            padding:2
+
+
+        };
+        var zoom = L.control.zoom(zoomOptions);   // Creating zoom control
+        zoom.addTo(ide.map);
+        //add scales
+        var scale = L.control.scale(); // Creating scale control
+        scale.addTo(ide.map);
+
         // tabs
         $("#dataviewer > div#data")[0].style.zIndex = -1001;
         $(".tabs a.button").bind("click", function (e) {
@@ -618,7 +679,7 @@ var ide = new function () {
         //});
 
         // keyboard event listener
-        $(document).keydown(ide.onKeyPress);
+        //$(document).keydown(ide.onKeyPress);
 
         // leaflet extension: more map controls
         var MapButtons = L.Control.extend({
@@ -673,46 +734,46 @@ var ide = new function () {
                         // One-shot position request.
 
                         setMarkerOnCrntPsn();
-                        // ide.map.setView(pos, settings.coords_zoom);
+                        //ide.map.setView(pos, settings.coords_zoom);
 
 
                         return false;
                     },
                     ide.map
                 );
-                link = L.DomUtil.create(
-                    "a",
-                    "leaflet-control-buttons-bboxfilter leaflet-bar-part",
-                    container
-                );
-                $('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
-                link.href = "#";
-                link.className += " t";
-                link.setAttribute("data-t", "[title]map_controlls.select_bbox");
-                i18n.translate_ui(link);
-                L.DomEvent.addListener(
-                    link,
-                    "click",
-                    function (e) {
-                        if (
-                            $(e.target)
-                                .parent()
-                                .hasClass("disabled") // check if this button is enabled
-                        )
-                            return false;
-                        if (!ide.map.bboxfilter.isEnabled()) {
-                            ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
-                            ide.map.bboxfilter.enable();
-                        } else {
-                            ide.map.bboxfilter.disable();
-                        }
-                        $(e.target)
-                            .toggleClass("ui-icon-circlesmall-close")
-                            .toggleClass("ui-icon-image");
-                        return false;
-                    },
-                    ide.map
-                );
+                //link = L.DomUtil.create(
+                //    "a",
+                //    "leaflet-control-buttons-bboxfilter leaflet-bar-part",
+                //    container
+                //);
+                //$('<span class="ui-icon ui-icon-image"/>').appendTo($(link));
+                //link.href = "#";
+                //link.className += " t";
+                //link.setAttribute("data-t", "[title]map_controlls.select_bbox");
+                //i18n.translate_ui(link);
+                //L.DomEvent.addListener(
+                //    link,
+                //    "click",
+                //    function (e) {
+                //        if (
+                //            $(e.target)
+                //                .parent()
+                //                .hasClass("disabled") // check if this button is enabled
+                //        )
+                //            return false;
+                //        if (!ide.map.bboxfilter.isEnabled()) {
+                //            ide.map.bboxfilter.setBounds(ide.map.getBounds().pad(-0.2));
+                //            ide.map.bboxfilter.enable();
+                //        } else {
+                //            ide.map.bboxfilter.disable();
+                //        }
+                //        $(e.target)
+                //            .toggleClass("ui-icon-circlesmall-close")
+                //            .toggleClass("ui-icon-image");
+                //        return false;
+                //    },
+                //    ide.map
+                //);
                 // link = L.DomUtil.create(
                 //   "a",
                 //   "leaflet-control-buttons-fullscreen leaflet-bar-part",
@@ -748,7 +809,7 @@ var ide = new function () {
                     container
                 );
 
-            // .addClass("crosshairs")
+                // .addClass("crosshairs")
 
                 $('<span class="ui-icon ui-icon-cancel"/>').appendTo($(link));
                 link.href = "#";
@@ -762,11 +823,17 @@ var ide = new function () {
                         e.preventDefault();
                         if (ide.map.hasLayer(overpass.osmLayer))
                             ide.map.removeLayer(overpass.osmLayer);
-                        else if (theMarker !== undefined) {
-                            ide.map.removeLayer(theMarker);
+                        //else if (theMarker !== undefined) {
+                        //    ide.map.removeLayer(theMarker);
+                        //    //alert("injaaa");
+                        //}
+                        if (crntPsn !== undefined) {
+                            ide.map.removeLayer(crntPsn);
                             //alert("injaaa");
                         }
-                        else ide.map.addLayer(overpass.osmLayer);
+                        else {
+                            ide.map.addLayer(overpass.osmLayer);
+                        }
                         return false;
                     },
                     ide.map
@@ -925,10 +992,9 @@ var ide = new function () {
         });
 
 
-
-          //var checks=L.layerGroup(newCheck);
+        //var checks=L.layerGroup(newCheck);
         //  L.control.layers(newCheck).addTo(ide.map);
-           ide.map.addControl(   new CheckBox());
+        ide.map.addControl(new CheckBox());
 
 
         var ComboBox = L.Control.extend({
@@ -991,11 +1057,11 @@ var ide = new function () {
                 ide.onRunClick();
                 return false;
 
-            }, ide.map);
+                }, ide.map);
 
 
-            return container;
-        }
+                return container;
+            }
 
 
         });
@@ -1432,19 +1498,21 @@ var ide = new function () {
 
             var lat, lon;
 
-            if (clickedLanLon !== undefined) {
-
-                lat = clickedLanLon.lat;
-                lon = clickedLanLon.lng;
-                console.log("clickedLanLon ===> ", "lat: ", lat, "lon: ", lon);
-
-            } else {
-                lat = position.coords.latitude;
-                lon = position.coords.longitude;
-                console.log("currentpsn ===> ", "lat: ", lat, "lon: ", lon);
-            }
+            //if (clickedLanLon !== undefined) {
+            //
+            //    lat = clickedLanLon.lat;
+            //    lon = clickedLanLon.lng;
+            //    console.log("clickedLanLon ===> ", "lat: ", lat, "lon: ", lon);
+            //
+            //} else {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            //    console.log("currentpsn ===> ", "lat: ", lat, "lon: ", lon);
+            //}
             lat = "\"" + lat + "\"";
             lon = "\"" + lon + "\"";
+            var radius = 1000;
+            radius = "\"" + radius + "\"";
             var testqry = "<union>\n";
             if (L.DomUtil.get('atm_checkbox').checked) {
 
@@ -2757,13 +2825,15 @@ var ide = new function () {
         // 1. render canvas from map tiles
         // hide map controlls in this step :/
         // todo: also hide popups?
-        ide.waiter.addInfo("prepare map");
+        //ide.waiter.addInfo("prepare map");
+        ide.waiter.addInfo("");
         $("#map .leaflet-control-container .leaflet-top").hide();
         $("#data_stats").hide();
         if (settings.export_image_attribution) attribControl.addTo(ide.map);
         if (!settings.export_image_scale) scaleControl.removeFrom(ide.map);
         // try to use crossOrigin image loading. osm tiles should be served with the appropriate headers -> no need of bothering the proxy
-        ide.waiter.addInfo("rendering map tiles");
+        //ide.waiter.addInfo("rendering map tiles");
+        ide.waiter.addInfo("");
         $("#map .leaflet-overlay-pane").hide();
         html2canvas(document.getElementById("map"), {
             useCORS: true,
@@ -2776,7 +2846,8 @@ var ide = new function () {
                 if (!settings.export_image_scale) scaleControl.addTo(ide.map);
                 if (settings.show_data_stats) $("#data_stats").show();
                 $("#map .leaflet-control-container .leaflet-top").show();
-                ide.waiter.addInfo("rendering map data");
+                //ide.waiter.addInfo("rendering map data");
+                ide.waiter.addInfo("");
                 // 2. render overlay data onto canvas
                 canvas.id = "render_canvas";
                 var ctx = canvas.getContext("2d");
@@ -3139,8 +3210,10 @@ var ide = new function () {
     };
     this.update_map = function () {
 
-        ide.waiter.open(i18n.t("waiter.processing_query"));
-        ide.waiter.addInfo("resetting map");
+        //ide.waiter.open(i18n.t("waiter.processing_query"));
+        ide.waiter.open("");
+        //ide.waiter.addInfo("resetting map");
+        ide.waiter.addInfo("");
         $("#data_stats").remove();
         // resets previously highlighted error lines
         this.resetErrors();
@@ -3150,7 +3223,8 @@ var ide = new function () {
             ide.map.removeLayer(overpass.osmLayer);
         $("#map_blank").remove();
 
-        ide.waiter.addInfo("building query");
+        //ide.waiter.addInfo("building query");
+        ide.waiter.addInfo("");
         // run the query via the overpass object
         ide.getQuery(function (query) {
             var query_lang = ide.getQueryLang();
