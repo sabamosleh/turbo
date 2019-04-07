@@ -905,20 +905,20 @@ var ide = new function () {
                 position: "topleft"
             },
             onAdd: function (map) {
-                var container = L.DomUtil.create('div', 'checkboxes');
-                container.innerHTML = '<lable for="atm_checkbox">Atm</lable>' +
-                    '       <input   id="atm_checkbox"  type="checkbox" name="atm"    /> \n' +
-                    '<label for="bank_checkbox">Bank</label>' +
-                    '       <input   id="bank_checkbox" type="checkbox" name="bank"  />  \n' +
-                    '\n';
-                container.style.position = "absolute";
-                container.style.left = "215px";
-                // L.DomEvent.addListener(container, "click", function () {
-                //     ide.onRunClick();
-                //     return false;
-                //
-                // }, ide.map);
+                var container = L.DomUtil.create('div', 'container');
+                container.innerHTML =
+                    '<label class="container">خودپرداز\n' +
+                    '  <input type="checkbox"   id="atm_checkbox" >\n' +
+                    '  <span class="checkmark"></span>\n' +
+                    '</label>\n'+
+                '<label class="container">بانک\n' +
+                '  <input type="checkbox"  id="bank_checkbox" >\n' +
+                '  <span class="checkmark"></span>\n' +
+                '</label>';
 
+
+                container.style.position = "absolute";
+                container.style.left = "190px";
 
                 return container;
             }
@@ -939,14 +939,15 @@ var ide = new function () {
 
                 var container = L.DomUtil.create('div', 'combobox blue');
                 console.log(container);
-                container.innerHTML = '<select id="combobox blue">' +
+                container.innerHTML = '<select id="combobox blue" class="leaflet-container">' +
                     '<option>بانک ملی</option>' +
                     '<option>بانک آینده</option>' +
                     '<option>بانک سرمایه</option>' +
                     '<option>بانک انصار</option>' +
                     '<option>بانک اقتصاد نوین</option>' +
                     '<option>بانک مهراقتصاد</option>' +
-                    '<option></option>' +
+                    '<option>بانک سامان</option>' +
+                    '<option value="empty"></option>' +
                     '</select>';
 
 
@@ -985,7 +986,7 @@ var ide = new function () {
             var container = L.DomUtil.create('div', 'btn-run');
             container.innerHTML = '<input type="button" class="btn-run" value="برو">';
             container.style.position = "absolute";
-            container.style.left = "300px";
+            container.style.left = "310px";
             L.DomEvent.addListener(container, "click", function () {
                 ide.onRunClick();
                 return false;
@@ -1427,7 +1428,8 @@ var ide = new function () {
         getCurrentPsn(function (position) {
 
             var bankName = L.DomUtil.get("combobox blue").value;
-            bankName = "\"" + bankName + "\"";
+            console.log("bank name is---->"+bankName+"");
+
             var lat, lon;
 
             if (clickedLanLon !== undefined) {
@@ -1443,24 +1445,36 @@ var ide = new function () {
             }
             lat = "\"" + lat + "\"";
             lon = "\"" + lon + "\"";
-            var radius = 100;
-            radius = "\"" + radius + "\"";
             var testqry = "<union>\n";
             if (L.DomUtil.get('atm_checkbox').checked) {
 
                 testqry = testqry +
                     "  <query type=\"node\">\n" +
-                    "     <has-kv k=\"amenity\" v=\"atm\"/>\n" +
-                    "<has-kv k=\"name\" v=" + bankName + "/>\n" +
-                    "<around lat=" + lat + " lon=" + lon + " radius=\"1000\"/> \n" +
+                    "     <has-kv k=\"amenity\" v=\"atm\"/>\n" ;
+                if(bankName!=="empty"){
+                    // console.log("bank name: "+bankName);
+                    var bank_name="\"" + bankName + "\"";
+                  //  bankName = "\"" + bankName + "\"";
+                    console.log(bankName);
+                    testqry=testqry+"<has-kv k=\"name\" v=" + bank_name + "/>\n" ;
+
+                }
+
+                testqry=testqry+ "<around lat=" + lat + " lon=" + lon + " radius=\"1000\"/> \n" +
                     "  </query>\n";
             }
             if (L.DomUtil.get('bank_checkbox').checked) {
 
                 testqry = testqry +
                     "  <query type=\"node\">\n" +
-                    "  <has-kv k=\"amenity\" v=\"bank\"/>\n" +
-                    "<has-kv k=\"name\" v=" + bankName + "/>\n" +
+                    "  <has-kv k=\"amenity\" v=\"bank\"/>\n" ;
+                if(bankName!=="empty"){
+                    var bank_name="\"" + bankName + "\"";
+                    // bankName = "\"" + bankName + "\"";
+                    testqry=testqry+"<has-kv k=\"name\" v=" + bank_name + "/>\n" ;
+                }
+
+                testqry=testqry+
                     "<around lat=" + lat + " lon=" + lon + " radius=\"1000\"/> \n" +
                     "  </query>\n";
             }
