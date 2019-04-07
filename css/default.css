@@ -186,8 +186,8 @@ a.external {
     background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
     height:  29px;
     overflow: hidden;
-    width: 150px;
-
+    width: 153px;
+    border-radius: 5%;
 
 
 }
@@ -205,21 +205,14 @@ a.external {
     background-color: rgba(0, 34, 56, 0.62);
     text-align:center;
 
-
 }
 
-.blue    {
-    background-color: rgba(255, 254, 253, 0.83);
+.blue    { background-color: rgba(255, 254, 253, 0.83);}
 
-
-}
-
-.blue select    { color: rgb(234, 233, 233);
-    }
+.blue select    { color: rgb(234, 233, 233);}
 
 .combobox{
     background-color: rgba(2, 100, 112, 0.09);
-
 }
 
 
@@ -257,7 +250,6 @@ a.external {
     float: left;
     text-decoration: none;
     padding: 6px 10px;
-
     margin: 0px 0px;
     background: #fff;
     background: rgba(255, 255, 255, 0.3);
@@ -276,15 +268,15 @@ a.button:not(.disabled):not(.active):active /*, a.button:focus*/
     text-shadow: none;
 }
 
-        .checkboxes{
-            transform: translateY(-30%);
-            display: inline-flex;
-            margin: 0;
-            top: 10%;
-            -ms-transform: translateY(-50%);
-            margin-left: auto;
-            text-align:right;
-        }
+        /*.checkboxes{*/
+            /*transform: translateY(-30%);*/
+            /*display: inline-flex;*/
+            /*margin: 0;*/
+            /*top: 10%;*/
+            /*-ms-transform: translateY(-50%);*/
+            /*margin-left: auto;*/
+            /*text-align:right;*/
+        /*}*/
 
 .container {
     display: block;
@@ -317,6 +309,7 @@ a.button:not(.disabled):not(.active):active /*, a.button:focus*/
     height: 20px;
     width: 20px;
     background-color: rgba(43, 39, 56, 0.62);
+    border-radius: 20%;
 }
 
  /*!*On mouse-over, add a grey background color*!*/
