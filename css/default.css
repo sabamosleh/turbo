@@ -203,6 +203,7 @@ a.external {
     padding: 5px; /* If you add too much padding here, the options won't show in IE */
     width: 150px;
     background-color: rgba(0, 34, 56, 0.62);
+    text-align:center;
 
 
 }
