@@ -616,7 +616,9 @@ var ide = new function () {
 
         attribControl = new L.Control.Attribution({prefix: ""});
         attribControl.addAttribution(tilesAttrib);
-        var pos = new L.LatLng(settings.coords_lat, settings.coords_lon);
+        // var pos = new L.LatLng(settings.coords_lat, settings.coords_lon);
+        var pos = new L.LatLng(35.7721041, 51.4145469);
+        // var pos = '35.7721041,51.4145469';
         ide.map.setView(pos, settings.coords_zoom).addLayer(tiles);
         ide.map.tile_layer = tiles;
         // inverse opacity layer
@@ -647,8 +649,8 @@ var ide = new function () {
         var zoom = L.control.zoom(zoomOptions);   // Creating zoom control
         zoom.addTo(ide.map);
         //add scales
-        var scale = L.control.scale(); // Creating scale control
-        scale.addTo(ide.map);
+        // var scale = L.control.scale(); // Creating scale control
+        // scale.addTo(ide.map);
 
         // tabs
         $("#dataviewer > div#data")[0].style.zIndex = -1001;
@@ -828,7 +830,7 @@ var ide = new function () {
                         //    //alert("injaaa");
                         //}
                         if (crntPsn !== undefined) {
-                            ide.map.removeLayer(crntPsn);
+                            // ide.map.removeLayer(crntPsn);
                             //alert("injaaa");
                         }
                         else {
@@ -1004,7 +1006,6 @@ var ide = new function () {
             onAdd: function (map) {
 
                 var container = L.DomUtil.create('div', 'combobox blue');
-                console.log(container);
                 container.innerHTML = '<select id="combobox blue" class="leaflet-container">' +
                     '<option>بانک ملی</option>' +
                     '<option>بانک آینده</option>' +
@@ -1035,11 +1036,30 @@ var ide = new function () {
                 position: "topleft"
             },
             onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'btn-run');
+            var container = L.DomUtil.create('div',"div-btn");
             container.innerHTML = '<input type="button" class="btn-run" value="برو">';
             container.style.position = "absolute";
-            container.style.left = "310px";
+            container.style.left = "1000%";
             L.DomEvent.addListener(container, "click", function () {
+                //
+                // $.post('http://localhost:8080',   // url
+                //     { myData: 'This is my data.' }, // data to be submit
+                //     function(data, status, jqXHR) {// success callback
+                //         alert(data);
+                //     });
+                // var request = require('request');
+                //
+                // request.post(
+                //     'http://localhost:8080',
+                //     { json: { key: 'value' } },
+                //     function (error, response, body) {
+                //         if (!error && response.statusCode == 200) {
+                //             console.log(body);
+                //         }
+                //     }
+                // );
+
+
                 ide.onRunClick();
                 return false;
 
