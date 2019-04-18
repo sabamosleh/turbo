@@ -66,6 +66,9 @@ var overpass = new function() {
     server,
     user_mapcss
   ) {
+
+    // console.log("in over pass class.......................");
+
     server = server || configs.defaultServer;
     // 1. get overpass json data
     if (query_lang == "xml") {

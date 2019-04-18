@@ -28,6 +28,16 @@ import ide from "./ide";
 $(document).ready(ide.init);
 $(document).ready(initClickHandler);
 
+
+// var express=require("express");
+// var app=express();
+//
+// app.listen(3000, function() {
+//
+//     console.log("server is up!");
+//
+// });
+
 function initClickHandler() {
   $("*[data-ide-handler]").each(function() {
     var handlerDefinition = $(this)
@@ -38,4 +48,13 @@ function initClickHandler() {
     var handler = ide[handlerName];
     $(this).on(event, handler);
   });
+
+
+
 }
+
+
+
+
+
+
